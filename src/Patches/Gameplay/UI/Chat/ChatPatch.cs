@@ -15,7 +15,7 @@ internal static class ChatPatch
     internal static List<string> ChatHistory = [];
     internal static int CurrentHistorySelection = -1;
 
-    internal const string CommandPostfixName = "<size=0%>IsCommand</size>";
+    internal const string COMMAND_POSTFIX_ID = "<size=0%>IsCommand</size>";
 
     internal static void ClearChat()
     {
@@ -33,7 +33,7 @@ internal static class ChatPatch
             var chatBubble = obj.GetComponent<ChatBubble>();
             if (chatBubble != null)
             {
-                if (chatBubble.NameText.text.EndsWith(CommandPostfixName)) continue;
+                if (chatBubble.NameText.text.EndsWith(COMMAND_POSTFIX_ID)) continue;
                 HudManager.Instance.Chat.chatBubblePool.Reclaim(chatBubble);
             }
         }
@@ -49,7 +49,7 @@ internal static class ChatPatch
             var chatBubble = obj.GetComponent<ChatBubble>();
             if (chatBubble != null)
             {
-                if (!chatBubble.NameText.text.EndsWith(CommandPostfixName)) continue;
+                if (!chatBubble.NameText.text.EndsWith(COMMAND_POSTFIX_ID)) continue;
                 HudManager.Instance.Chat.chatBubblePool.Reclaim(chatBubble);
             }
         }
@@ -292,11 +292,11 @@ internal static class ChatPatch
         {
             int length = __instance.textArea.text.Length;
             __instance.charCountText.text = string.Format("{0}/118", length);
-            __instance.charCountText.color = GetCharColor(length, Color.white);
+            __instance.charCountText.color = GetCharColor(length);
         }
     }
 
-    private static Color GetCharColor(int length, Color color)
+    private static Color GetCharColor(int length)
     {
         Color[] colorGradient =
         [

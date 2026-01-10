@@ -119,10 +119,10 @@ internal static class Utils
         if (data == null) return;
 
         var pooledBubble = chat.GetPooledBubble();
-        var messageName = $"<color=#ffffff><b>(<color=#00ff44>{Translator.GetString("SystemMessage")}</color>)</b>" + ChatPatch.CommandPostfixName;
+        var messageName = $"<color=#ffffff><b>(<color=#00ff44>{Translator.GetString("SystemMessage")}</color>)</b>" + ChatPatch.COMMAND_POSTFIX_ID;
 
         if (!string.IsNullOrEmpty(overrideName))
-            messageName = overrideName + ChatPatch.CommandPostfixName;
+            messageName = overrideName + ChatPatch.COMMAND_POSTFIX_ID;
 
         try
         {
