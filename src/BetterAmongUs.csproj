@@ -19,6 +19,7 @@
 		<PropertyGroup Condition="'$(CommitHash)' == ''">
 			<CommitHash>unknown</CommitHash>
 		</PropertyGroup>
+		<Message Text="Git commit hash: $(CommitHash)" Importance="high" />
 	</Target>
 
 	<!-- Build Metadata -->
@@ -27,21 +28,24 @@
 		<BuildDate>$([System.DateTime]::UtcNow.ToString("MM.dd.yyyy HH:mm"))</BuildDate>
 	</PropertyGroup>
 
-	<!-- Assembly Metadata Attributes -->
-	<ItemGroup>
-		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-			<_Parameter1>CommitHash</_Parameter1>
-			<_Parameter2>$(CommitHash)</_Parameter2>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-			<_Parameter1>BuildDate</_Parameter1>
-			<_Parameter2>$(BuildDate)</_Parameter2>
-		</AssemblyAttribute>
-		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-			<_Parameter1>BuildConfiguration</_Parameter1>
-			<_Parameter2>$(Configuration)</_Parameter2>
-		</AssemblyAttribute>
-	</ItemGroup>
+	<!-- Target to add assembly metadata (runs AFTER GetGitCommitHash) -->
+	<Target Name="AddAssemblyMetadata" AfterTargets="GetGitCommitHash" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<_Parameter1>CommitHash</_Parameter1>
+				<_Parameter2>$(CommitHash)</_Parameter2>
+			</AssemblyAttribute>
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<_Parameter1>BuildDate</_Parameter1>
+				<_Parameter2>$(BuildDate)</_Parameter2>
+			</AssemblyAttribute>
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<_Parameter1>BuildConfiguration</_Parameter1>
+				<_Parameter2>$(Configuration)</_Parameter2>
+			</AssemblyAttribute>
+		</ItemGroup>
+		<Message Text="Added assembly metadata: CommitHash=$(CommitHash), BuildDate=$(BuildDate)" Importance="normal" />
+	</Target>
 
 	<!-- Game Path Configuration -->
 	<PropertyGroup>
