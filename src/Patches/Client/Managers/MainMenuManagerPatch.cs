@@ -3,16 +3,16 @@ using BetterAmongUs.Managers;
 using HarmonyLib;
 using UnityEngine;
 
-namespace BetterAmongUs.Patches.Client;
+namespace BetterAmongUs.Patches.Client.Managers;
 
-[HarmonyPatch(typeof(MainMenuManager))]
-internal static class MainMenuPatch
+[HarmonyPatch]
+internal static class MainMenuManagerPatch
 {
     internal static PassiveButton? ButtonPrefab;
 
-    [HarmonyPatch(nameof(MainMenuManager.LateUpdate))]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
     [HarmonyPostfix]
-    private static void LateUpdate_Postfix(MainMenuManager __instance)
+    private static void MainMenuManager_LateUpdate_Postfix(MainMenuManager __instance)
     {
         List<PassiveButton> buttons = [__instance.playButton, __instance.inventoryButton, __instance.shopButton, __instance.playLocalButton, __instance.PlayOnlineButton, __instance.backButtonOnline,
             __instance.newsButton, __instance.myAccountButton, __instance.settingsButton, __instance.howToPlayButton, __instance.freePlayButton, __instance.accountCTAButton, __instance.accountStatsButton];
@@ -32,9 +32,9 @@ internal static class MainMenuPatch
     }
 
     // Replace AU logo with BAU logo
-    [HarmonyPatch(nameof(MainMenuManager.Start))]
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     [HarmonyPostfix]
-    private static void Start_Postfix(MainMenuManager __instance)
+    private static void MainMenuManager_Start_Postfix(MainMenuManager __instance)
     {
         GameObject logo = GameObject.Find("LeftPanel/Sizer/LOGO-AU");
         GameObject sizer = logo.transform.parent.gameObject;

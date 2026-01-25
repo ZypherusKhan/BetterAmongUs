@@ -1,16 +1,15 @@
 ﻿using BetterAmongUs.Helpers;
 using BetterAmongUs.Managers;
 using BetterAmongUs.Modules.AntiCheat;
-using BetterAmongUs.Patches.Client;
 using HarmonyLib;
 using UnityEngine;
 
-namespace BetterAmongUs.Patches.Managers;
+namespace BetterAmongUs.Patches.Client.Managers;
 
-[HarmonyPatch(typeof(ModManager))]
+[HarmonyPatch]
 internal static class ModManagerPatch
 {
-    [HarmonyPatch(nameof(ModManager.LateUpdate))]
+    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
     [HarmonyPostfix]
     private static void LateUpdate_Postfix(ModManager __instance)
     {

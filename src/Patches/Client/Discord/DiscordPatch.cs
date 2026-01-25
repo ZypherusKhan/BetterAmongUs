@@ -3,16 +3,17 @@ using BetterAmongUs.Modules;
 using Discord;
 using HarmonyLib;
 
-namespace BetterAmongUs.Patches.Client;
+namespace BetterAmongUs.Patches.Client.Discord;
 
-
-[HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
-internal static class DiscordRPC
+[HarmonyPatch]
+internal static class DiscordPatch
 {
     private static string lobbycode = "";
     private static string region = "";
 
-    private static void Prefix([HarmonyArgument(0)] Activity activity)
+    [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
+    [HarmonyPrefix]
+    private static void ActivityManager_UpdateActivity_Prefix(Activity activity)
     {
         if (activity == null) return;
 

@@ -11,7 +11,7 @@ internal static class ServerDropdownPatch
     [HarmonyPatch(typeof(FindAGameManager))]
     [HarmonyPatch(nameof(FindAGameManager.Start))]
     [HarmonyPrefix]
-    private static void Start_Prefix(FindAGameManager __instance)
+    private static void FindAGameManager_Start_Prefix(FindAGameManager __instance)
     {
         var aspectPosition = __instance.serverDropdown.transform.parent.GetComponent<AspectPosition>();
         if (aspectPosition != null)
@@ -28,7 +28,7 @@ internal static class ServerDropdownPatch
     [HarmonyPatch(typeof(ServerDropdown))]
     [HarmonyPatch(nameof(ServerDropdown.FillServerOptions))]
     [HarmonyPrefix]
-    private static bool FillServerOptions_Prefix(ServerDropdown __instance)
+    private static bool ServerDropdown_FillServerOptions_Prefix(ServerDropdown __instance)
     {
         __instance.background.size = new Vector2(5, 1);
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace BetterAmongUs.Patches.Client;
 
-[HarmonyPatch(typeof(OptionsMenuBehaviour))]
+[HarmonyPatch]
 internal static class OptionsMenuBehaviourPatch
 {
     private static ClientOptionItem? AntiCheat;
@@ -26,7 +26,7 @@ internal static class OptionsMenuBehaviourPatch
     private static ClientOptionItem? OpenSaveData;
     private static ClientOptionItem? SwitchToVanilla;
 
-    [HarmonyPatch(nameof(OptionsMenuBehaviour.Start))]
+    [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Start))]
     [HarmonyPrefix]
     private static void Start_Postfix(OptionsMenuBehaviour __instance)
     {
@@ -102,7 +102,7 @@ internal static class OptionsMenuBehaviourPatch
 
             static void ChatDarkModeToggle()
             {
-                ChatPatch.ChatControllerPatch.SetChatTheme();
+                ChatPatch.SetChatTheme();
             }
         }
 
@@ -180,7 +180,7 @@ internal static class OptionsMenuBehaviourPatch
         }
     }
 
-    [HarmonyPatch(nameof(OptionsMenuBehaviour.Close))]
+    [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Close))]
     [HarmonyPrefix]
     private static void Close_Postfix()
     {

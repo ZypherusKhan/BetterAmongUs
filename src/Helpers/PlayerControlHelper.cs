@@ -116,7 +116,7 @@ static class PlayerControlHelper
 
         if (setReasonInfo != "")
         {
-            GameDataShowNotificationPatch.BetterShowNotification(player.Data, forceReasonText: string.Format(setReasonInfo, Ban ? Translator.GetString("AntiCheat.Ban").ToLower() : Translator.GetString("AntiCheat.Kick").ToLower()));
+            PlayerJoinAndLeftPatch.BetterShowNotification(player.Data, forceReasonText: string.Format(setReasonInfo, Ban ? Translator.GetString("AntiCheat.Ban").ToLower() : Translator.GetString("AntiCheat.Kick").ToLower()));
         }
 
         AmongUsClient.Instance.KickPlayer(player.GetClientId(), Ban);

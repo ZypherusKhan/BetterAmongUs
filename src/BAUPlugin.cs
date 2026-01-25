@@ -132,7 +132,7 @@ internal class BAUPlugin : BasePlugin
             LoadOptions();
             Translator.Init();
             Harmony.PatchAll();
-            GameSettingMenuPatch.SetupSettings(true);
+            GameSettingsPatch.SetupSettings(true);
             InstanceAttribute.RegisterAll();
             OutfitData.Init();
 

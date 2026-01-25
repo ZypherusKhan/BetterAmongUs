@@ -64,8 +64,8 @@ internal sealed class BetterPingTracker : MonoBehaviour
 
         if (GameState.IsLobby && GameState.IsHost && GameState.IsVanillaServer && !GameState.IsLocalGame)
         {
-            string timeColor = Utils.Color32ToHex(Utils.LerpColor([Color.green, Color.yellow, new Color(1f, 0.5f, 0f), Color.red], (0, 300), GameStartManagerPatch.lobbyTimer, true));
-            sb.AppendFormat("{0}: <b>{1}</b>\n", Translator.GetString("Timer").ToUpper(), $"<{timeColor}>{GameStartManagerPatch.lobbyTimerDisplay}</color>");
+            string timeColor = Utils.Color32ToHex(Utils.LerpColor([Color.green, Color.yellow, new Color(1f, 0.5f, 0f), Color.red], (0, 300), lobbyTimer, true));
+            sb.AppendFormat("{0}: <b>{1}</b>\n", Translator.GetString("Timer").ToUpper(), $"<{timeColor}>{lobbyTimerDisplay}</color>");
         }
 
         sb.Append($"<color=#00dbdb><size=75%>BetterAmongUs {BAUPlugin.GetVersionText(true)}</size></color>\n");

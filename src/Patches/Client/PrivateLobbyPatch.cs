@@ -13,10 +13,9 @@ internal static class PrivateLobbyPatch
     private static List<PassiveButton>? buttons = [];
     private static TextMeshPro? toggleText;
 
-    [HarmonyPatch(typeof(CreateGameOptions))]
-    [HarmonyPatch(nameof(CreateGameOptions.Show))]
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
     [HarmonyPostfix]
-    private static void CreateGameOptionsShow_Postfix(CreateGameOptions __instance)
+    private static void CreateGameOptions_Show_Postfix(CreateGameOptions __instance)
     {
         if (toggle != null) return;
         buttons.Clear();
@@ -81,10 +80,9 @@ internal static class PrivateLobbyPatch
         BAUPlugin.PrivateOnlyLobby.Value = modeOn;
     }
 
-    [HarmonyPatch(typeof(LobbyInfoPane))]
-    [HarmonyPatch(nameof(LobbyInfoPane.Update))]
+    [HarmonyPatch(typeof(LobbyInfoPane), nameof(LobbyInfoPane.Update))]
     [HarmonyPostfix]
-    private static void LobbyInfoPaneUpdate_Postfix(LobbyInfoPane __instance)
+    private static void LobbyInfoPane_Update_Postfix(LobbyInfoPane __instance)
     {
         if (BAUPlugin.PrivateOnlyLobby.Value && !GameState.IsLocalGame && GameState.IsHost)
         {

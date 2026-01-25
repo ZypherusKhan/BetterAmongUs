@@ -5,16 +5,16 @@ using HarmonyLib;
 
 namespace BetterAmongUs.Patches.Gameplay.Systems;
 
-[HarmonyPatch(typeof(VoteBanSystem))]
+[HarmonyPatch]
 internal static class VoteBanSystemPatch
 {
     private static readonly Dictionary<VoteBanSystem, List<(int ClientId, (ushort HashPuid, string FriendCode) Voter)>> _voteData = [];
 
     private static bool DoLog;
 
-    [HarmonyPatch(nameof(VoteBanSystem.AddVote))]
+    [HarmonyPatch(typeof(VoteBanSystem), nameof(VoteBanSystem.AddVote))]
     [HarmonyPrefix]
-    private static bool AddVote_Prefix(VoteBanSystem __instance, int srcClient, int clientId)
+    private static bool VoteBanSystem_AddVote_Prefix(VoteBanSystem __instance, int srcClient, int clientId)
     {
         if (!GameState.IsHost)
         {
@@ -81,9 +81,9 @@ internal static class VoteBanSystemPatch
     }
 
 
-    [HarmonyPatch(nameof(VoteBanSystem.AddVote))]
+    [HarmonyPatch(typeof(VoteBanSystem), nameof(VoteBanSystem.AddVote))]
     [HarmonyPostfix]
-    private static void AddVote_Postfix(VoteBanSystem __instance, int srcClient, int clientId)
+    private static void VoteBanSystem_AddVote_Postfix(VoteBanSystem __instance, int srcClient, int clientId)
     {
         if (DoLog)
         {

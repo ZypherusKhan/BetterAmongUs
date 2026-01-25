@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace BetterAmongUs.Patches.Gameplay.UI.Settings;
 
-[HarmonyPatch(typeof(NumberOption))]
+[HarmonyPatch]
 internal static class NumberOptionPatch
 {
-    [HarmonyPatch(nameof(NumberOption.Increase))]
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Increase))]
     [HarmonyPrefix]
-    private static bool Increase_Prefix(NumberOption __instance)
+    private static bool NumberOption_Increase_Prefix(NumberOption __instance)
     {
         int times = 1;
         if (Input.GetKey(KeyCode.LeftShift))
@@ -30,9 +30,9 @@ internal static class NumberOptionPatch
         return false;
     }
 
-    [HarmonyPatch(nameof(NumberOption.Decrease))]
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Decrease))]
     [HarmonyPrefix]
-    private static bool Decrease_Prefix(NumberOption __instance)
+    private static bool NumberOption_Decrease_Prefix(NumberOption __instance)
     {
         int times = 1;
         if (Input.GetKey(KeyCode.LeftShift))
