@@ -66,7 +66,7 @@ internal sealed class OptionDividerItem : OptionItem
     /// </summary>
     /// <returns>NotImplementedException as dividers don't have values.</returns>
     /// <exception cref="NotImplementedException">Always thrown since dividers have no values.</exception>
-    internal sealed override string ValueAsString()
+    public sealed override string ValueAsString()
     {
         throw new NotImplementedException();
     }

@@ -87,7 +87,7 @@ internal sealed class OptionHeaderItem : OptionItem
     /// </summary>
     /// <returns>NotImplementedException as headers don't have values.</returns>
     /// <exception cref="NotImplementedException">Always thrown since headers have no values.</exception>
-    internal sealed override string ValueAsString()
+    public sealed override string ValueAsString()
     {
         throw new NotImplementedException();
     }

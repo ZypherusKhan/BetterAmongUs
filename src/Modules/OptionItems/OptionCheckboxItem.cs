@@ -6,7 +6,7 @@ namespace BetterAmongUs.Modules.OptionItems;
 /// <summary>
 /// Represents a checkbox option item that can be toggled on or off.
 /// </summary>
-internal sealed class OptionCheckboxItem : OptionItem<bool>
+public sealed class OptionCheckboxItem : OptionItem<bool>
 {
     /// <summary>
     /// Gets whether child options should be shown, based on the checkbox value.
@@ -103,7 +103,7 @@ internal sealed class OptionCheckboxItem : OptionItem<bool>
     /// Gets the string representation of the checkbox value with color formatting.
     /// </summary>
     /// <returns>A colored string indicating "On" (green) or "Off" (red).</returns>
-    internal sealed override string ValueAsString()
+    public sealed override string ValueAsString()
     {
         Color color = Value ? Color.green : Color.red;
         string @bool = Value ? "On" : "Off";
@@ -114,12 +114,12 @@ internal sealed class OptionCheckboxItem : OptionItem<bool>
     /// Gets the boolean value of this checkbox option.
     /// </summary>
     /// <returns>The current boolean value.</returns>
-    internal sealed override bool GetBool() => GetValue();
+    public sealed override bool GetBool() => GetValue();
 
     /// <summary>
     /// Checks if the checkbox value matches a specific boolean.
     /// </summary>
     /// <param name="@bool">The boolean value to compare against.</param>
     /// <returns>True if the checkbox value matches, false otherwise.</returns>
-    internal sealed override bool Is(bool @bool) => @bool == GetBool();
+    public sealed override bool Is(bool @bool) => @bool == GetBool();
 }

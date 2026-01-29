@@ -10,7 +10,7 @@ namespace BetterAmongUs.Modules.OptionItems;
 /// <summary>
 /// Base abstract class for configuration option items in BetterAmongUs.
 /// </summary>
-internal abstract class OptionItem
+public abstract class OptionItem
 {
     internal static int MaskLayer => 20;
     internal static List<OptionItem> AllOptions = [];
@@ -18,8 +18,8 @@ internal abstract class OptionItem
     internal const string InfiniteIcon = "<b>∞</b>";
     internal virtual bool CanLoad => true;
     internal virtual bool IsOption => true;
-    internal string Name => Translation != null ? Translator.GetString(Translation, showInvalid: false) : "None";
-    internal int Id => _id ?? -1;
+    public string Name => Translation != null ? Translator.GetString(Translation, showInvalid: false) : "None";
+    public int Id => _id ?? -1;
     protected int? _id { get; set; } = null;
     protected string? Translation { get; set; } = null;
     internal OptionTab? Tab { get; set; }
@@ -34,7 +34,7 @@ internal abstract class OptionItem
     internal bool Hide => !Show || GetParents().Any(opt => !opt.ShowChildren) || BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_GameSetting + Translation);
     internal static OptionItem? GetOptionById(int id) => AllOptions.FirstOrDefault(opt => opt._id == id);
     internal virtual void UpdateVisuals(bool updateTabVisuals = true) { }
-    internal abstract string ValueAsString();
+    public abstract string ValueAsString();
     internal virtual void TryLoad(bool forceLoad = false) { }
     internal virtual void SetToDefault() { }
 
@@ -314,7 +314,7 @@ internal abstract class OptionItem
     /// </summary>
     /// <returns>The boolean value.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support boolean values.</exception>
-    internal virtual bool GetBool()
+    public virtual bool GetBool()
     {
         throw new NotImplementedException();
     }
@@ -324,7 +324,7 @@ internal abstract class OptionItem
     /// </summary>
     /// <returns>The float value.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support float values.</exception>
-    internal virtual float GetFloat()
+    public virtual float GetFloat()
     {
         throw new NotImplementedException();
     }
@@ -334,7 +334,7 @@ internal abstract class OptionItem
     /// </summary>
     /// <returns>The integer value.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support integer values.</exception>
-    internal virtual int GetInt()
+    public virtual int GetInt()
     {
         throw new NotImplementedException();
     }
@@ -344,7 +344,7 @@ internal abstract class OptionItem
     /// </summary>
     /// <returns>The string value index.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support string values.</exception>
-    internal virtual int GetStringValue()
+    public virtual int GetStringValue()
     {
         throw new NotImplementedException();
     }
@@ -355,7 +355,7 @@ internal abstract class OptionItem
     /// <param name="@bool">The boolean value to check against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support boolean comparison.</exception>
-    internal virtual bool Is(bool @bool)
+    public virtual bool Is(bool @bool)
     {
         throw new NotImplementedException();
     }
@@ -366,7 +366,7 @@ internal abstract class OptionItem
     /// <param name="@float">The float value to check against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support float comparison.</exception>
-    internal virtual bool Is(float @float)
+    public virtual bool Is(float @float)
     {
         throw new NotImplementedException();
     }
@@ -377,7 +377,7 @@ internal abstract class OptionItem
     /// <param name="@int">The integer value to check against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support integer comparison.</exception>
-    internal virtual bool Is(int @int)
+    public virtual bool Is(int @int)
     {
         throw new NotImplementedException();
     }
@@ -388,7 +388,7 @@ internal abstract class OptionItem
     /// <param name="@string">The string value to check against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
     /// <exception cref="NotImplementedException">Thrown when the option type doesn't support string comparison.</exception>
-    internal virtual bool Is(string @string)
+    public virtual bool Is(string @string)
     {
         throw new NotImplementedException();
     }
@@ -396,7 +396,7 @@ internal abstract class OptionItem
     /// <summary>
     /// Represents a node in the option hierarchy tree for text formatting.
     /// </summary>
-    class TreeNode
+    internal class TreeNode
     {
         /// <summary>
         /// Gets or sets the parent tree node.
@@ -424,14 +424,14 @@ internal abstract class OptionItem
 /// Generic base class for typed option items with value storage and serialization.
 /// </summary>
 /// <typeparam name="T">The type of value stored by this option.</typeparam>
-internal abstract class OptionItem<T> : OptionItem
+public abstract class OptionItem<T> : OptionItem
 {
     protected TextMeshPro? TitleTMP { get; set; }
     protected TextMeshPro? ValueTMP { get; set; }
     private bool HasLoadValue { get; set; }
     protected T? Value { get; set; } = default;
     protected T? DefaultValue { get; set; } = default;
-    internal virtual T? GetValue()
+    public virtual T? GetValue()
     {
         if (BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_GameSetting + Translation))
         {
@@ -441,7 +441,7 @@ internal abstract class OptionItem<T> : OptionItem
         return Value;
     }
     internal virtual T? GetDefaultValue() => DefaultValue;
-    internal override string ValueAsString() => Value?.ToString() ?? string.Empty;
+    public override string ValueAsString() => Value?.ToString() ?? string.Empty;
     internal override void SetToDefault()
     {
         Value = DefaultValue;
@@ -508,7 +508,7 @@ internal abstract class OptionItem<T> : OptionItem
     /// Sets the option's value and triggers updates and notifications.
     /// </summary>
     /// <param name="newValue">The new value to set.</param>
-    internal virtual void SetValue(T newValue)
+    public virtual void SetValue(T newValue)
     {
         T? oldValue = Value;
         Value = newValue;

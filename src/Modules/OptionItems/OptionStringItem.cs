@@ -5,7 +5,7 @@ namespace BetterAmongUs.Modules.OptionItems;
 /// <summary>
 /// Represents an option item that selects from a list of string values.
 /// </summary>
-internal sealed class OptionStringItem : OptionItem<int>
+public sealed class OptionStringItem : OptionItem<int>
 {
     /// <summary>
     /// Gets or sets the valid range of indices for this string option.
@@ -136,7 +136,7 @@ internal sealed class OptionStringItem : OptionItem<int>
     /// Sets the string selection value, clamping it to the valid range.
     /// </summary>
     /// <param name="newValue">The new string index to set.</param>
-    internal sealed override void SetValue(int newValue)
+    public sealed override void SetValue(int newValue)
     {
         newValue = Math.Clamp(newValue, Range.min, Range.max);
         base.SetValue(newValue);
@@ -175,13 +175,13 @@ internal sealed class OptionStringItem : OptionItem<int>
     /// Gets the translated string representation of the current selection.
     /// </summary>
     /// <returns>The translated string for the current index.</returns>
-    internal sealed override string ValueAsString() => Translator.GetString(TranslatorStrings[Value], showInvalid: false);
+    public sealed override string ValueAsString() => Translator.GetString(TranslatorStrings[Value], showInvalid: false);
 
     /// <summary>
     /// Gets the effective string value index, accounting for random selection.
     /// </summary>
     /// <returns>The actual string index (random if selected).</returns>
-    internal sealed override int GetStringValue()
+    public sealed override int GetStringValue()
     {
         var value = GetValue();
         if (!CanBeRandom)
@@ -206,12 +206,12 @@ internal sealed class OptionStringItem : OptionItem<int>
     /// </summary>
     /// <param name="@string">The string value to compare against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
-    internal sealed override bool Is(string @string) => TranslatorStrings[Value] == @string || ValueAsString() == @string;
+    public sealed override bool Is(string @string) => TranslatorStrings[Value] == @string || ValueAsString() == @string;
 
     /// <summary>
     /// Checks if the option's index value matches a specific integer.
     /// </summary>
     /// <param name="@int">The integer value to compare against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
-    internal sealed override bool Is(int @int) => !CanBeRandom ? Value == @int : Value == @int - 1;
+    public sealed override bool Is(int @int) => !CanBeRandom ? Value == @int : Value == @int - 1;
 }

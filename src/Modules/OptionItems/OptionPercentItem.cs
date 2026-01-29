@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a percentage option item that displays values from 0% to 100% with color coding.
 /// </summary>
-internal sealed class OptionPercentItem : OptionFloatItem
+public sealed class OptionPercentItem : OptionFloatItem
 {
     /// <summary>
     /// Creates a new percentage option item or returns an existing one with the same ID.
@@ -46,7 +46,7 @@ internal sealed class OptionPercentItem : OptionFloatItem
     /// Gets the string representation of the percentage value with color coding.
     /// </summary>
     /// <returns>A colored string showing the percentage (e.g., "75%").</returns>
-    internal sealed override string ValueAsString() => $"<color={GetColor(Value)}>{Value}%</color>";
+    public sealed override string ValueAsString() => $"<color={GetColor(Value)}>{Value}%</color>";
 
     /// <summary>
     /// Gets the color code for a percentage value based on its magnitude.

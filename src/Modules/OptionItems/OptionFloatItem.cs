@@ -6,7 +6,7 @@ namespace BetterAmongUs.Modules.OptionItems;
 /// <summary>
 /// Represents a floating-point number option item with adjustable value range.
 /// </summary>
-internal class OptionFloatItem : OptionItem<float>
+public class OptionFloatItem : OptionItem<float>
 {
     /// <summary>
     /// Gets whether child options should be shown, based on whether the value is greater than zero.
@@ -149,7 +149,7 @@ internal class OptionFloatItem : OptionItem<float>
     /// Sets the value, clamping it to the valid range.
     /// </summary>
     /// <param name="newValue">The new value to set.</param>
-    internal override void SetValue(float newValue)
+    public override void SetValue(float newValue)
     {
         newValue = Math.Clamp(newValue, Range.min, Range.max);
         base.SetValue(newValue);
@@ -188,7 +188,7 @@ internal class OptionFloatItem : OptionItem<float>
     /// Gets the string representation of the float value with formatting.
     /// </summary>
     /// <returns>A formatted string showing the value with prefix/postfix or infinity symbol.</returns>
-    internal override string ValueAsString()
+    public override string ValueAsString()
     {
         if (CanBeInfinite)
         {
@@ -205,19 +205,19 @@ internal class OptionFloatItem : OptionItem<float>
     /// Gets the float value of this option.
     /// </summary>
     /// <returns>The current float value.</returns>
-    internal override float GetFloat() => GetValue();
+    public override float GetFloat() => GetValue();
 
     /// <summary>
     /// Checks if the option value matches a specific float.
     /// </summary>
     /// <param name="@float">The float value to compare against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
-    internal override bool Is(float @float) => @float == GetFloat();
+    public override bool Is(float @float) => @float == GetFloat();
 
     /// <summary>
     /// Checks if the option value matches a specific integer.
     /// </summary>
     /// <param name="@int">The integer value to compare against.</param>
     /// <returns>True if the option value matches (as float), false otherwise.</returns>
-    internal override bool Is(int @int) => @int == GetFloat();
+    public override bool Is(int @int) => @int == GetFloat();
 }

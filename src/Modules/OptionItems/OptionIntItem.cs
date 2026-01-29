@@ -6,7 +6,7 @@ namespace BetterAmongUs.Modules.OptionItems;
 /// <summary>
 /// Represents an integer option item with adjustable value range.
 /// </summary>
-internal sealed class OptionIntItem : OptionItem<int>
+public sealed class OptionIntItem : OptionItem<int>
 {
     /// <summary>
     /// Gets whether child options should be shown, based on whether the value is greater than zero.
@@ -149,7 +149,7 @@ internal sealed class OptionIntItem : OptionItem<int>
     /// Sets the value, clamping it to the valid range.
     /// </summary>
     /// <param name="newValue">The new value to set.</param>
-    internal sealed override void SetValue(int newValue)
+    public sealed override void SetValue(int newValue)
     {
         newValue = Math.Clamp(newValue, Range.min, Range.max);
         base.SetValue(newValue);
@@ -188,7 +188,7 @@ internal sealed class OptionIntItem : OptionItem<int>
     /// Gets the string representation of the integer value with formatting.
     /// </summary>
     /// <returns>A formatted string showing the value with prefix/postfix or infinity symbol.</returns>
-    internal sealed override string ValueAsString()
+    public sealed override string ValueAsString()
     {
         if (CanBeInfinite)
         {
@@ -205,25 +205,25 @@ internal sealed class OptionIntItem : OptionItem<int>
     /// Gets the integer value of this option.
     /// </summary>
     /// <returns>The current integer value.</returns>
-    internal sealed override int GetInt() => GetValue();
+    public sealed override int GetInt() => GetValue();
 
     /// <summary>
     /// Gets the float representation of the integer value.
     /// </summary>
     /// <returns>The current integer value as a float.</returns>
-    internal sealed override float GetFloat() => GetValue();
+    public sealed override float GetFloat() => GetValue();
 
     /// <summary>
     /// Checks if the option value matches a specific integer.
     /// </summary>
     /// <param name="@int">The integer value to compare against.</param>
     /// <returns>True if the option value matches, false otherwise.</returns>
-    internal sealed override bool Is(int @int) => @int == GetInt();
+    public sealed override bool Is(int @int) => @int == GetInt();
 
     /// <summary>
     /// Checks if the option value matches a specific float.
     /// </summary>
     /// <param name="@float">The float value to compare against.</param>
     /// <returns>True if the option value matches (as integer), false otherwise.</returns>
-    internal sealed override bool Is(float @float) => @float == GetFloat();
+    public sealed override bool Is(float @float) => @float == GetFloat();
 }
