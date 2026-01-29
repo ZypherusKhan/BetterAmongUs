@@ -27,14 +27,14 @@ internal class ModdedSupportBAUEventExample
     }
 
     /// <summary>
-    /// Called when BetterAmongUs settings have been loaded.
-    /// Allows plugins to read or modify BAU settings.
+    /// Called when BetterAmongUs game options have been loaded.
+    /// Allows plugins to read or modify BAU game options.
     /// </summary>
-    /// <param name="settings">
-    /// Array of setting objects from BetterAmongUs.
+    /// <param name="options">
+    /// Array of game options objects from BetterAmongUs.
     /// The exact type of these objects depends on BAU's internal implementation.
     /// </param>
-    public void OnBAUSettingsLoaded(object[] settings)
+    public void OnBAUOptionsLoaded(object[] options)
     {
     }
 

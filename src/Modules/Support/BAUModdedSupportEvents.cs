@@ -26,10 +26,10 @@ public class BAUModdedSupportEvents
     public bool OnBAULoad(BasePlugin bauPlugin) => true;
 
     /// <summary>
-    /// Default implementation of the OnBAUSettingsLoaded event handler.
+    /// Default implementation of the OnBAUOptionsLoaded event handler.
     /// </summary>
-    /// <param name="settings">The loaded settings from BetterAmongUs.</param>
-    public void OnBAUSettingsLoaded(object[] settings) { }
+    /// <param name="options">The loaded game options from BetterAmongUs.</param>
+    public void OnBAUOptionsLoaded(object[] options) { }
 
     /// <summary>
     /// Default implementation of the OnBAUConfigEntriesLoaded event handler.
@@ -64,15 +64,15 @@ public class BAUModdedSupportEvents
     }
 
     /// <summary>
-    /// Invokes the OnBAUSettingsLoaded event handler for all loaded plugins.
+    /// Invokes the OnBAUOptionsLoaded event handler for all loaded plugins.
     /// </summary>
-    /// <param name="settings">The loaded settings from BetterAmongUs.</param>
-    internal static void InvokeAll_OnBAUSettingsLoaded(object[] settings)
+    /// <param name="options">The loaded game options from BetterAmongUs.</param>
+    internal static void InvokeAll_OnBAUOptionsLoaded(object[] options)
     {
         foreach (var pluginInfo in IL2CPPChainloader.Instance.Plugins.Values)
         {
             var plugin = (BasePlugin)pluginInfo.Instance;
-            InvokePluginMethod<object>(plugin, nameof(OnBAUSettingsLoaded), parameters: settings);
+            InvokePluginMethod<object>(plugin, nameof(OnBAUOptionsLoaded), parameters: options);
         }
     }
 

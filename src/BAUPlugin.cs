@@ -150,7 +150,7 @@ internal class BAUPlugin : BasePlugin
         Translator.Initialize();
         Harmony.PatchAll();
         GameSettingsPatch.SetupSettings(true);
-        BAUModdedSupportEvents.InvokeAll_OnBAUSettingsLoaded([.. OptionItem.AllOptions.Cast<object>()]);
+        BAUModdedSupportEvents.InvokeAll_OnBAUOptionsLoaded([.. OptionItem.AllOptions.Cast<object>()]);
         InstanceAttribute.RegisterAll();
         OutfitData.Initialize();
 
