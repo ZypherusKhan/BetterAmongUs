@@ -11,7 +11,7 @@ internal static class ModInfo
     /// <summary>
     /// Gets the release type of the current build.
     /// </summary>
-    internal static readonly ReleaseTypes ReleaseBuildType = ReleaseTypes.Dev;
+    internal static readonly ReleaseTypes ReleaseBuildType = ReleaseTypes.Release;
 
     /// <summary>
     /// Gets the Git commit hash from assembly metadata.
