@@ -57,10 +57,15 @@ internal abstract class BaseCommand
     internal virtual bool ShowCommand() => true;
 
     /// <summary>
-    /// Determines whether this command should be shown in suggestions.
+    /// Determines whether this command can be executed based on current conditions.
     /// </summary>
-    /// <returns>True if the command should be shown in suggestions; otherwise, false.</returns>
-    internal virtual bool ShowSuggestion() => ShowCommand();
+    /// <param name="reason">When this method returns, contains the reason why the command cannot be run if it returns false; otherwise, an empty string.</param>
+    /// <returns>True if the command can be executed; otherwise, false.</returns>
+    internal virtual bool CanRunCommand(out string reason)
+    {
+        reason = string.Empty;
+        return true;
+    }
 
     /// <summary>
     /// Executes the command.

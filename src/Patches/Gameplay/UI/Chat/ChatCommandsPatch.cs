@@ -52,6 +52,11 @@ internal static class ChatCommandsPatch
             return true;
         }
 
+        if (!closestCommand.CanRunCommand(out string _))
+        {
+            return false;
+        }
+
         HandleCommand();
 
         if (ChatPatch.ChatHistory.Count == 0 || ChatPatch.ChatHistory[^1] != text) ChatPatch.ChatHistory.Add(text);
@@ -130,8 +135,7 @@ internal static class ChatCommandsPatch
 
             closestCommand = GetClosestCommand(typedParts[0]);
             bool isSuggestionValid = closestCommand != null
-                && (typedParts[0].Equals(closestCommand.Name, StringComparison.OrdinalIgnoreCase) || typedParts.Length == 1)
-                && closestCommand.ShowSuggestion();
+                && (typedParts[0].Equals(closestCommand.Name, StringComparison.OrdinalIgnoreCase) || typedParts.Length == 1);
 
             if (isSuggestionValid)
             {
@@ -167,8 +171,13 @@ internal static class ChatCommandsPatch
             __instance.freeChatField.textArea.SetText(fullSuggestion);
         }
 
+        if (!closestCommand.CanRunCommand(out string _))
+        {
+            fullSuggestion = fullSuggestion.ToColor("#FF0300".HexToColor());
+        }
+
         commandText.text = fullSuggestion;
-        commandInfo.text = $"{closestCommand.Description}{GenerateArgumentInfo()}";
+        commandInfo.text = $"{closestCommand.Description}{GenerateArgumentInfo()}{GenerateCanRunInfo()}";
     }
 
     private static string GenerateSuggestion(string[] typedParts)
@@ -207,6 +216,15 @@ internal static class ChatCommandsPatch
         return $" - <#a6a6a6>{argumentInfo}</color>";
     }
 
+    private static string GenerateCanRunInfo()
+    {
+        if (!closestCommand.CanRunCommand(out string reason))
+        {
+            return $" - <#FF0300>{reason}</color>";
+        }
+
+        return string.Empty;
+    }
 
     internal static BaseCommand? GetClosestCommand(string typedCommand)
     {
