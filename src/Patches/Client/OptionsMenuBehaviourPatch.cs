@@ -21,7 +21,7 @@ internal static class OptionsMenuBehaviourPatch
     [HarmonyPostfix]
     private static void Start_Postfix(OptionsMenuBehaviour __instance)
     {
-        BetterOptionsTab = CreateTabPage(__instance, "BetterOptions");
+        BetterOptionsTab = CreateTabPage(__instance, Translator.GetString("BetterOption"));
         SetupAllClientOptions(__instance);
         UpdateTabPositions(__instance);
     }

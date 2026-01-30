@@ -48,11 +48,18 @@ internal static class Colors
     internal static string Color32ToHex(this Color32 color) => $"#{color.r:X2}{color.g:X2}{color.b:X2}{255:X2}";
 
     /// <summary>
-    /// Converts a Color32 object to a hexadecimal string representation.
+    /// Converts a Color object to a hexadecimal string representation.
     /// </summary>
-    /// <param name="color">The Color32 object to convert.</param>
-    /// <returns>A hexadecimal string representing the Color32 object.</returns>
-    internal static string ColorToHex(this Color color) => $"#{color.r:X2}{color.g:X2}{color.b:X2}{255:X2}";
+    /// <param name="color">The Color object to convert.</param>
+    /// <returns>A hexadecimal string representing the Color object.</returns>
+    internal static string ColorToHex(this Color color)
+    {
+        byte r = (byte)(color.r * 255);
+        byte g = (byte)(color.g * 255);
+        byte b = (byte)(color.b * 255);
+
+        return $"#{r:X2}{g:X2}{b:X2}{255:X2}";
+    }
 
     /// <summary>
     /// Converts a hexadecimal color string to a Color32 object.
