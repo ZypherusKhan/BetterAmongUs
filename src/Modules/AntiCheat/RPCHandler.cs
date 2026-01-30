@@ -1,6 +1,7 @@
 ﻿using BetterAmongUs.Attributes;
 using BetterAmongUs.Enums;
 using BetterAmongUs.Helpers;
+using BetterAmongUs.Modules.Support;
 using BetterAmongUs.Mono;
 using Hazel;
 using InnerNet;
@@ -116,6 +117,12 @@ internal abstract class RPCHandler
         {
             if (handlerFlag != HandlerFlag.HandleGameDataTag && calledId == handler.CallId)
             {
+                if (BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_RPCHandler + handler.GetType().Name)
+                    || BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_RPCHandler + handler.GetType().Name + ":" + Enum.GetName(handlerFlag)))
+                {
+                    break;
+                }
+
                 try
                 {
                     switch (handlerFlag)
@@ -145,6 +152,12 @@ internal abstract class RPCHandler
             }
             else if (handlerFlag == HandlerFlag.HandleGameDataTag && calledId == handler.GameDataTag)
             {
+                if (BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_RPCHandler + handler.GetType().Name)
+                    || BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_RPCHandler + handler.GetType().Name + ":" + Enum.GetName(handlerFlag)))
+                {
+                    break;
+                }
+
                 try
                 {
                     handler.HandleGameData(reader);

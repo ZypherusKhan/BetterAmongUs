@@ -18,11 +18,6 @@ public static class BAUModdedSupportFlags
     // ============================================
 
     /// <summary>
-    /// Flag to disable the anticheat system. When set by another mod, BetterAmongUs will disable its anticheat features.
-    /// </summary>
-    public static string Disable_Anticheat = "client.disable.anticheat";
-
-    /// <summary>
     /// Flag to disable the Better Ping Tracker feature. When set by another mod, BetterAmongUs will not patch out the normal ping tracker.
     /// </summary>
     public static string Disable_BetterPingTracker = "client.disable.betterpingtracker";
@@ -41,6 +36,25 @@ public static class BAUModdedSupportFlags
     /// Flag to disable custom mod stamp sprite. When set by another mod, BetterAmongUs will disable its custom mod stamp sprite.
     /// </summary>
     public static string Disable_CustomModStamp = "client.disable.custommodstamp";
+
+    // ============================================
+    // Anti-Cheat Features
+    // ============================================
+
+    /// <summary>
+    /// Flag to disable the anticheat system. When set by another mod, BetterAmongUs will disable its anticheat features.
+    /// </summary>
+    public static string Disable_Anticheat = "anticheat.disable.anticheat";
+
+    /// <summary>
+    /// Flag prefix to disable specific RPC handlers or their specific handler flags. 
+    /// The full flag should be "anticheat.disable.rpchandler=HandlerClassName" to disable the entire handler,
+    /// or "anticheat.disable.rpchandler=HandlerClassName:HandlerFlagName" to disable specific handling types.
+    /// When set by another mod, BetterAmongUs will disable the specified RPC handler or handler flag.
+    /// <seealso cref="AntiCheat.RPCHandler"/> for the base handler class that can be disabled.
+    /// <seealso cref="Enums.HandlerFlag"/> for the enum of handler flags that can be selectively disabled.
+    /// </summary>
+    public static string Disable_RPCHandler = "anticheat.disable.rpchandler=";
 
     // ============================================
     // Client Features - Command System
