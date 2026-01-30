@@ -47,6 +47,11 @@ public static class BAUModdedSupportFlags
     /// </summary>
     public static string Disable_DiscordRP = "client.disable.discordrp";
 
+    /// <summary>
+    /// Flag to disable custom BAU Http Header. When set by another mod, BetterAmongUs will disable its custom http header it sends when looking for games.
+    /// </summary>
+    public static string Disable_BAUHttpHeader = "client.disable.bauhttpheader";
+
     // ============================================
     // Anti-Cheat Features
     // ============================================

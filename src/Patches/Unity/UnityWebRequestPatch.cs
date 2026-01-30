@@ -1,4 +1,5 @@
 ﻿using BetterAmongUs.Helpers;
+using BetterAmongUs.Modules.Support;
 using HarmonyLib;
 using System.Text;
 using UnityEngine;
@@ -30,6 +31,8 @@ internal static class UnityWebRequestPatch
     [HarmonyPrefix]
     private static void UnityWebRequest_SendWebRequest_Prefix(UnityWebRequest __instance)
     {
+        if (BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_BAUHttpHeader)) return;
+
         var path = new Uri(__instance.url).AbsolutePath;
         if (path.Contains("/api/games"))
         {
@@ -41,6 +44,8 @@ internal static class UnityWebRequestPatch
     [HarmonyPostfix]
     private static void UnityWebRequest_SendWebRequest_Postfix(UnityWebRequest __instance, UnityWebRequestAsyncOperation __result)
     {
+        if (BAUModdedSupportFlags.HasFlag(BAUModdedSupportFlags.Disable_BAUHttpHeader)) return;
+
         var path = new Uri(__instance.url).AbsolutePath;
         if (path.Contains("/api/games"))
         {
