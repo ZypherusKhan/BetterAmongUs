@@ -58,7 +58,7 @@ internal sealed class OutfitData
         var Save = () =>
         {
             if (ignoreChange) return;
-            GetOutfitData().LoadToData();
+            GetOutfitData().SetFromData();
             BetterDataManager.BetterDataFile.Save();
         };
 
@@ -92,6 +92,7 @@ internal sealed class OutfitData
         }
 
         BetterDataManager.BetterDataFile.SelectedOutfitPreset = 0;
+        GetOutfitData(0).SetFromData();
         BetterDataManager.BetterDataFile.Save();
     }
 
@@ -135,7 +136,7 @@ internal sealed class OutfitData
     /// <summary>
     /// Updates the outfit data with the current player customization values.
     /// </summary>
-    internal void LoadToData()
+    internal void SetFromData()
     {
         HatId = DataManager.Player.Customization.Hat;
         PetId = DataManager.Player.Customization.Pet;
