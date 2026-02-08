@@ -1,3 +1,5 @@
+Here's the updated guide with clear instructions for downloading the correct zip file and extracting it, as well as replacing the DLL if you've previously installed the mod:
+
 # ♻ BetterAmongUs ♻
 
 A client-sided mod that enhances the experience for the popular game Among Us!
@@ -13,12 +15,48 @@ A client-sided mod that enhances the experience for the popular game Among Us!
     </a>
 </div>
 
+## Installation
+
+### For First-Time Installation:
+
+1. **Download the Correct Version**: 
+   - Go to the [Releases](https://github.com/EnhancedNetwork/BetterAmongUs/releases) page
+   - **Choose the correct zip file** for your platform:
+     - Steam and itch.io users: `BAU-SteamItchio-Version.zip `
+     - Epic Games and Microsoft Store users: `BAU-EpicMsStore-Version.zip`
+
+2. **Extract the Files**:
+   - Extract the downloaded zip file to a temporary location
+
+3. **Install to Among Us Folder**:
+   - Navigate to your Among Us installation directory
+   - Copy ALL files and folders from the extracted zip into your Among Us folder
+   - Overwrite any existing files when prompted
+
+4. **Verify Installation**:
+   - Launch Among Us
+   - If installed correctly, you should see "BetterAmongUs" in the main menu
+
+### For Updating an Existing Installation:
+
+1. **Download the DLL File**:
+   - Go to the [Releases](https://github.com/EnhancedNetwork/BetterAmongUs/releases) page
+   - Download just the `BetterAmongUs.dll` file
+
+2. **Replace the Old DLL**:
+   - Navigate to your Among Us installation folder
+   - Go to: `BepInEx/plugins/`
+   - Replace the existing `BetterAmongUs.dll` with the newly downloaded one
+
+3. **Verify Update**:
+   - Launch Among Us
+   - Check that the mod version has been updated in the main menu
+
 ## Getting Started
 
-1. **Install the Mod**: Download the latest version from [Releases](https://github.com/EnhancedNetwork/BetterAmongUs-Public/releases) and follow the installation instructions in the [BepInEx Installation Guide](https://docs.bepinex.dev/articles/user_guide/installation/index.html) to get BetterAmongUs up and running.
-2. **Explore the Features**: Use the pause menu to discover new options and settings.
-3. **Check the Commands**: Type `/commands` in the chat to view a list of all available commands.
-4. **Stay Updated**: Keep an eye on this page for future updates and new features.
+1. **Explore the Features**: Use the pause menu to discover new options and settings.
+2. **Check the Commands**: Type `/commands` in the chat to view a list of all available commands.
+3. **Stay Updated**: Keep an eye on this page for future updates and new features.
 
 ## Supported Platforms
 - ✅ Steam
@@ -93,3 +131,7 @@ betterauofficial@gmail.com
 ## Disclaimer
 
 **BetterAmongUs** is an unofficial, fan-made mod for **Among Us**. It is not affiliated with, endorsed by, or associated with **InnerSloth LLC** or the official **Among Us** game. All trademarks and copyrights related to **Among Us** are the property of **InnerSloth LLC**. This mod is created purely for entertainment purposes and to enhance the gaming experience. Use of this mod is at your own risk.
+
+---
+
+**Important Note**: Always ensure your game version matches the supported versions listed above. If you encounter issues, verify you downloaded the correct zip file for your platform or replaced the DLL in the correct location.
