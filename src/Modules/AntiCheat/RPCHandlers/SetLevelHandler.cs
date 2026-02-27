@@ -12,16 +12,6 @@ internal sealed class SetLevelHandler : RPCHandler
 {
     internal override byte CallId => (byte)RpcCalls.SetLevel;
 
-    internal override void Handle(PlayerControl? sender, MessageReader reader)
-    {
-        uint level = reader.ReadPackedUInt32() + 1;
-
-        if (level < BetterGameSettings.KickLevelBelow.GetInt())
-        {
-            sender.Kick(setReasonInfo: $" is level {level}, level must be equal or above {BetterGameSettings.KickLevelBelow.GetInt()} to join");
-        }
-    }
-
     internal override bool HandleAntiCheatCancel(PlayerControl? sender, MessageReader reader)
     {
         if (sender.DataIsCollected() == true && sender.BetterData().AntiCheatInfo.HasSetLevel && !GameState.IsLocalGame && GameState.IsVanillaServer)

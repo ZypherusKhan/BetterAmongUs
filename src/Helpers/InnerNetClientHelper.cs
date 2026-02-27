@@ -1,7 +1,6 @@
 ﻿using AmongUs.InnerNet.GameDataMessages;
 using Hazel;
 using InnerNet;
-using System.Globalization;
 
 namespace BetterAmongUs.Helpers;
 
@@ -35,255 +34,6 @@ internal static class InnerNetClientHelper
         if (rpcMessage.TryCast<IGameDataMessage>(out var data))
         {
             AmongUsClient.Instance.reliableMessageQueue.Enqueue(data);
-        }
-    }
-
-    /// <summary>
-    /// Writes an array of boolean values to a MessageWriter in a packed format to save space.
-    /// Each byte stores up to 8 boolean values as bits.
-    /// </summary>
-    /// <param name="writer">The MessageWriter to write to.</param>
-    /// <param name="boolsEnumerable">The boolean values to write.</param>
-    internal static void WriteBooleans(this MessageWriter writer, IEnumerable<bool> boolsEnumerable)
-    {
-        bool[] bools = [.. boolsEnumerable];
-
-        writer.Write(bools.Length);
-
-        byte currentByte = 0;
-        int bitIndex = 0;
-
-        foreach (bool b in bools)
-        {
-            if (b) currentByte |= (byte)(1 << bitIndex);
-
-            bitIndex++;
-
-            if (bitIndex == 8)
-            {
-                writer.Write(currentByte);
-                currentByte = 0;
-                bitIndex = 0;
-            }
-        }
-
-        if (bitIndex > 0) writer.Write(currentByte);
-    }
-
-    /// <summary>
-    /// Reads an array of boolean values from a MessageReader that were previously packed using WriteBooleans.
-    /// </summary>
-    /// <param name="reader">The MessageReader to read from.</param>
-    /// <returns>An array of boolean values.</returns>
-    internal static bool[] ReadBooleans(this MessageReader reader)
-    {
-        int length = reader.ReadInt32();
-        bool[] bools = new bool[length];
-
-        int bitIndex = 0;
-        byte currentByte = 0;
-
-        for (int i = 0; i < length; i++)
-        {
-
-            if (bitIndex == 0) currentByte = reader.ReadByte();
-
-            bools[i] = (currentByte & 1 << bitIndex) != 0;
-
-            bitIndex++;
-
-            if (bitIndex == 8) bitIndex = 0;
-        }
-
-        return bools;
-    }
-
-    /// <summary>
-    /// Writes an array of bytes to a MessageWriter in a packed format, combining two bytes into one to save space.
-    /// </summary>
-    /// <param name="writer">The MessageWriter to write to.</param>
-    /// <param name="bytesEnumerable">The byte values to write.</param>
-    internal static void WriteBytes(this MessageWriter writer, IEnumerable<byte> bytesEnumerable)
-    {
-        byte[] bytes = bytesEnumerable.ToArray();
-
-        writer.Write(bytes.Length);
-        writer.Write(bytes);
-    }
-
-    /// <summary>
-    /// Reads an array of bytes from a MessageReader that were previously packed using WritePackedBytes.
-    /// </summary>
-    /// <param name="reader">The MessageReader to read from.</param>
-    /// <returns>An array of bytes.</returns>
-    internal static byte[] ReadBytes(this MessageReader reader)
-    {
-        int count = reader.ReadInt32();
-        var bytes = reader.ReadBytes(count);
-        return [.. bytes];
-    }
-
-    /// <summary>
-    /// Writes an array of bytes to a MessageWriter in a packed format, combining two bytes into one to save space.
-    /// </summary>
-    /// <param name="writer">The MessageWriter to write to.</param>
-    /// <param name="bytesEnumerable">The byte values to write.</param>
-    internal static void WritePackedBytes(this MessageWriter writer, IEnumerable<byte> bytesEnumerable)
-    {
-        byte[] bytes = bytesEnumerable.ToArray();
-
-        writer.Write((byte)bytes.Length);
-
-        for (int i = 0; i < bytes.Length; i += 2)
-        {
-            byte packedBytes;
-            if (i + 1 < bytes.Length) packedBytes = (byte)((bytes[i] & 0x0F) << 4 | bytes[i + 1] & 0x0F);
-            else packedBytes = (byte)((bytes[i] & 0x0F) << 4);
-            writer.Write(packedBytes);
-        }
-    }
-
-    /// <summary>
-    /// Reads an array of bytes from a MessageReader that were previously packed using WritePackedBytes.
-    /// </summary>
-    /// <param name="reader">The MessageReader to read from.</param>
-    /// <returns>An array of bytes.</returns>
-    internal static byte[] ReadPackedBytes(this MessageReader reader)
-    {
-        int count = reader.ReadByte();
-        List<byte> bytes = [];
-
-        for (int i = 0; i < (count + 1) / 2; i++)
-        {
-            byte packedBytes = reader.ReadByte();
-            bytes.Add((byte)(packedBytes >> 4 & 0x0F));
-
-            if (bytes.Count < count) bytes.Add((byte)(packedBytes & 0x0F));
-        }
-
-        return bytes.ToArray();
-    }
-
-    /// <summary>
-    /// Writes a floating-point value to a MessageWriter in a packed format to save space.
-    /// Handles negative values, integers, and decimal numbers efficiently.
-    /// </summary>
-    /// <param name="writer">The MessageWriter to write to.</param>
-    /// <param name="value">The float value to write.</param>
-    internal static void WritePacked(this MessageWriter writer, float value)
-    {
-        bool isNegative = value < 0;
-        float absValue = Math.Abs(value);
-
-        // Check if it's a solid number (integer)
-        bool isSolidNumber = absValue == (uint)absValue && absValue <= uint.MaxValue;
-
-        // Track the number of decimal places dynamically
-        int decimalPlaces = 0;
-        int scaleFactor = 1;
-        bool needsFallback = false; // Flag to determine if we need to send the value as a regular float
-
-        // Check if the value is not a solid number
-        if (!isSolidNumber)
-        {
-            // Convert to string to count decimals (avoiding floating point precision issues)
-            string absValueStr = absValue.ToString("G", CultureInfo.InvariantCulture);
-            if (absValueStr.Contains('.'))
-            {
-                decimalPlaces = absValueStr.Split('.')[1].Length; // Count decimals after the period
-                scaleFactor = (int)Math.Pow(10, decimalPlaces); // Set scale factor dynamically
-            }
-        }
-
-        // If the value can't be packed efficiently, we need a fallback
-        if (!isSolidNumber || absValue * scaleFactor > uint.MaxValue)
-        {
-            needsFallback = true; // Flag for fallback as a regular float
-        }
-
-        // Pack the flags into a list of booleans
-        var flags = new List<bool>
-        {
-            isNegative,
-            isSolidNumber,
-            decimalPlaces > 0,
-            needsFallback
-        };
-
-        // Write the flags using WriteBooleans
-        writer.WriteBooleans(flags);
-
-        // Write the decimal places as a byte (0-3 for simplicity)
-        writer.Write((byte)decimalPlaces);
-
-        // If it's a solid number, pack as uint
-        if (isSolidNumber && !needsFallback)
-        {
-            writer.Write((uint)absValue);
-        }
-
-        // If it's a decimal number, scale and pack it as uint (but check if it can fit)
-        else if (decimalPlaces > 0 && !needsFallback)
-        {
-            // Check if the scaled value fits into a uint
-            if (absValue * scaleFactor <= uint.MaxValue)
-            {
-                uint scaledValue = (uint)(absValue * scaleFactor); // Dynamically scale the value
-                writer.Write(scaledValue);
-            }
-            else
-            {
-                // If it can't fit into a uint, send as regular float
-                writer.Write(value);
-            }
-        }
-        else
-        {
-            // Send as regular float if it requires fallback
-            writer.Write(value);
-        }
-    }
-
-    /// <summary>
-    /// Reads a floating-point value from a MessageReader that was previously packed using WritePacked.
-    /// Handles negative values, integers, and decimal numbers efficiently.
-    /// </summary>
-    /// <param name="reader">The MessageReader to read from.</param>
-    /// <returns>The unpacked float value.</returns>
-    internal static float ReadPackedSingle(this MessageReader reader)
-    {
-        var flags = reader.ReadBooleans();
-        bool isNegative = flags[0];
-        bool isSolidNumber = flags[1];
-        bool hasDecimalPart = flags[2];
-        bool needsFallback = flags[3];
-
-        byte decimalPlaces = reader.ReadByte(); // Read the decimal places count
-
-        // If the value was packed as a regular float, just read it (don't reapply the sign)
-        if (needsFallback)
-        {
-            return reader.ReadSingle(); // The sign is already handled in the packed value
-        }
-
-        // Handle solid number (uint) case
-        if (isSolidNumber)
-        {
-            uint packedValue = reader.ReadUInt32();
-            return isNegative ? -(float)packedValue : packedValue;
-        }
-        // Handle decimal number (scaled uint)
-        else if (hasDecimalPart)
-        {
-            uint scaledValue = reader.ReadUInt32();
-            float scaleFactor = (float)Math.Pow(10, decimalPlaces); // Use the stored decimal places count
-            return isNegative ? -(scaledValue / scaleFactor) : scaledValue / scaleFactor;
-        }
-        else
-        {
-            // For other cases where it's a normal float
-            float value = reader.ReadSingle();
-            return isNegative ? -value : value;
         }
     }
 
@@ -342,6 +92,31 @@ internal static class InnerNetClientHelper
     /// <param name="reader">The MessageReader to read from.</param>
     /// <returns>The Vent or null if not found.</returns>
     internal static Vent? ReadVentId(this MessageReader reader) => BAUPlugin.AllVents.FirstOrDefault(vent => vent.Id == reader.ReadInt32());
+
+    /// <summary>
+    /// Writes an array of bytes to a MessageWriter in a packed format, combining two bytes into one to save space.
+    /// </summary>
+    /// <param name="writer">The MessageWriter to write to.</param>
+    /// <param name="bytesEnumerable">The byte values to write.</param>
+    internal static void WriteBytes(this MessageWriter writer, IEnumerable<byte> bytesEnumerable)
+    {
+        byte[] bytes = bytesEnumerable.ToArray();
+
+        writer.Write(bytes.Length);
+        writer.Write(bytes);
+    }
+
+    /// <summary>
+    /// Reads an array of bytes from a MessageReader that were previously packed using WritePackedBytes.
+    /// </summary>
+    /// <param name="reader">The MessageReader to read from.</param>
+    /// <returns>An array of bytes.</returns>
+    internal static byte[] ReadBytes(this MessageReader reader)
+    {
+        int count = reader.ReadInt32();
+        var bytes = reader.ReadBytes(count);
+        return [.. bytes];
+    }
 
     /// <summary>
     /// Converts a MessageWriter to a MessageReader.
@@ -403,90 +178,40 @@ internal static class InnerNetClientHelper
     }
 
     /// <summary>
-    /// Writes multiple MessageReaders to a MessageWriter.
+    /// Sends an RPC message immediately to all clients that match the specified target criteria, bypassing standard
+    /// synchronization mechanisms.
     /// </summary>
-    /// <param name="writer">The MessageWriter to write to.</param>
-    /// <param name="readers">The MessageReaders to write.</param>
-    /// <param name="clear">Whether to clear the writer before writing.</param>
-    /// <returns>The MessageWriter for method chaining.</returns>
-    internal static MessageWriter WriteReaders(this MessageWriter writer, IEnumerable<MessageReader> readers, bool clear = false)
+    /// <param name="client">The InnerNetClient instance used to send the RPC messages.</param>
+    /// <param name="playerNetId">The network ID of the player on whose behalf the RPC is sent.</param>
+    /// <param name="callId">The identifier for the RPC call to be executed.</param>
+    /// <param name="option">The send option that determines how the message is delivered (e.g., reliability, ordering).</param>
+    /// <param name="targetClients">A function that selects which clients should receive the RPC message. The RPC is sent only to clients for which
+    /// this function returns <see langword="true"/>.</param>
+    /// <param name="writeTo">An action that writes the RPC payload to the provided MessageWriter.</param>
+    internal static void SendRpcImmediatelyDesync(this InnerNetClient client, uint playerNetId, RpcCalls callId, SendOption option, Func<ClientData, bool> targetClients, Action<MessageWriter> writeTo)
     {
-        if (clear) writer.Clear(writer.SendOption);
-
-        foreach (MessageReader reader in readers)
+        foreach (var allClients in AmongUsClient.Instance.allClients)
         {
-            writer.StartMessage(reader.Tag);
-            writer.Write(reader.ReadBytes(reader.Length));
-            writer.EndMessage();
-        }
+            if (!targetClients(allClients)) continue;
 
-        return writer;
+            client.SendRpcImmediately(playerNetId, callId, option, writeTo, allClients.Id);
+        }
     }
 
     /// <summary>
-    /// Creates a copy of a MessageWriter.
+    /// Sends a remote procedure call (RPC) message immediately to the specified player, using the provided message
+    /// writer action and send option.
     /// </summary>
-    /// <param name="writer">The MessageWriter to copy.</param>
-    /// <returns>A new MessageWriter with the same content.</returns>
-    internal static MessageWriter Copy(this MessageWriter writer)
+    /// <param name="client">The InnerNetClient instance used to send the RPC message.</param>
+    /// <param name="playerNetId">The network identifier of the target player to whom the RPC is sent.</param>
+    /// <param name="callId">The identifier of the RPC call to invoke.</param>
+    /// <param name="option">The send option that determines how the message is delivered (such as reliability or channel).</param>
+    /// <param name="writeTo">An action that writes the RPC message content to the provided MessageWriter.</param>
+    /// <param name="targetClientId">The client identifier of the specific target client. Use -1 to broadcast to all clients.</param>
+    internal static void SendRpcImmediately(this InnerNetClient client, uint playerNetId, RpcCalls callId, SendOption option, Action<MessageWriter> writeTo, int targetClientId = -1)
     {
-        var newWriter = MessageWriter.Get(writer.SendOption);
-        newWriter.Write(writer.ToByteArray(false));
-        return newWriter;
-    }
-
-    /// <summary>
-    /// Starts the RPC desynchronization process for the given player, call ID, and send option.
-    /// </summary>
-    /// <param name="client">The InnerNetClient instance.</param>
-    /// <param name="playerNetId">The network ID of the player.</param>
-    /// <param name="callId">The RPC call ID.</param>
-    /// <param name="option">The send option for the RPC.</param>
-    /// <param name="ignoreClientId">The client ID to ignore. Default is -1, which means no client is ignored.</param>
-    /// <param name="clientCheck">Optional function to filter which clients receive the RPC.</param>
-    /// <returns>A list of MessageWriter instances for the RPC calls.</returns>
-    /// <example>
-    /// <code>
-    /// List&lt;MessageWriter&gt; messageWriter = AmongUsClient.Instance.StartRpcDesync(PlayerNetId, (byte)RpcCalls, SendOption, ClientId);
-    /// messageWriter.ForEach(mW => mW.Write("RPC TEST"));
-    /// AmongUsClient.Instance.FinishRpcDesync(messageWriter);
-    /// </code>
-    /// </example>
-    internal static List<MessageWriter> StartRpcDesync(this InnerNetClient client, uint playerNetId, byte callId, SendOption option, int ignoreClientId = -1, Func<ClientData, bool>? clientCheck = null)
-    {
-        List<MessageWriter> messageWriters = [];
-
-        if (ignoreClientId < 0)
-        {
-            messageWriters.Add(client.StartRpcImmediately(playerNetId, callId, option, -1));
-        }
-        else
-        {
-            foreach (var allClients in AmongUsClient.Instance.allClients.WhereIl2Cpp(c => c.Id != ignoreClientId))
-            {
-                if (clientCheck == null || clientCheck.Invoke(allClients))
-                {
-                    messageWriters.Add(client.StartRpcImmediately(playerNetId, callId, option, allClients.Id));
-                }
-            }
-        }
-
-        return messageWriters;
-    }
-
-    /// <summary>
-    /// Completes and sends the RPC desynchronization messages.
-    /// </summary>
-    /// <param name="client">The InnerNetClient instance.</param>
-    /// <param name="messageWriters">The list of MessageWriters to finish and send.</param>
-    internal static void FinishRpcDesync(this InnerNetClient client, List<MessageWriter> messageWriters)
-    {
-        foreach (var msg in messageWriters)
-        {
-            msg.EndMessage();
-            msg.EndMessage();
-            client.SendOrDisconnect(msg);
-            msg.Recycle();
-        }
+        var writer = client.StartRpcImmediately(playerNetId, (byte)callId, option, targetClientId);
+        writeTo(writer);
+        client.FinishRpcImmediately(writer);
     }
 }

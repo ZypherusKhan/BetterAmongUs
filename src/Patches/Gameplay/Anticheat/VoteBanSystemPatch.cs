@@ -4,7 +4,7 @@ using BetterAmongUs.Modules;
 using BetterAmongUs.Modules.Support;
 using HarmonyLib;
 
-namespace BetterAmongUs.Patches.Gameplay.Systems;
+namespace BetterAmongUs.Patches.Gameplay.Anticheat;
 
 [HarmonyPatch]
 internal static class VoteBanSystemPatch

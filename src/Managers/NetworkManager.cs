@@ -432,6 +432,13 @@ internal static class NetworkManager
                 return false;
             }
         }
+        else if (netObj is CustomNetworkTransform networkTransform)
+        {
+            if (!PlayerRpc(networkTransform.myPlayer, callId, reader))
+            {
+                return false;
+            }
+        }
 
         return true;
     }

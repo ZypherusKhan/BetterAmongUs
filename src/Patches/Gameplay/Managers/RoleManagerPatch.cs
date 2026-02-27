@@ -15,20 +15,23 @@ internal static class RoleManagerPatch
     internal static Dictionary<string, int> ImpostorMultiplier = []; // HashPuid, Multiplier
     private static readonly Random random = new();
 
-    // Check if client is not verified Better Among Us user
-    static readonly Func<InnerNet.ClientData, bool> clientCheck = (clientData) =>
+    // Check if client is verified Better Among Us user
+    private static Func<InnerNet.ClientData, bool> SendTo(PlayerControl target)
     {
-        return clientData?.BetterData()?.IsVerifiedBetterUser != true;
-    };
+        return (clientData) =>
+        {
+            return clientData.Id != target.GetClientId() && clientData?.BetterData()?.IsVerifiedBetterUser != true;
+        };
+    }
 
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SetRole))]
     [HarmonyPrefix]
     private static void RoleManager_SetRole_Prefix(RoleManager __instance, PlayerControl targetPlayer, RoleTypes roleType)
     {
         // Store the original role when player dies (for ghost role purposes)
-        if (RoleManager.IsGhostRole(roleType))
+        if (roleType.IsGhostRole())
         {
-            if (!RoleManager.IsGhostRole(targetPlayer.Data.RoleType))
+            if (!targetPlayer.Data.RoleType.IsGhostRole())
             {
                 targetPlayer.BetterData().RoleInfo.DeadDisplayRole = targetPlayer.Data.RoleType;
             }
@@ -113,7 +116,7 @@ internal static class RoleManagerPatch
         // Get role counts from game options
         foreach (RoleTypes role in Roles)
         {
-            if (role.GetBehaviourPrefab().IsImpostor)
+            if (role.IsImpostorRole())
                 ImpostorRoles[role] = GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(role);
             else
                 CrewmateRoles[role] = GameOptionsManager.Instance.CurrentGameOptions.RoleOptions.GetNumPerGame(role);
@@ -154,12 +157,13 @@ internal static class RoleManagerPatch
                         // Desync role to hide special role from non-BAU players
                         if (BetterGameSettings.DesyncRoles.GetBool())
                         {
-                            if (kvp.Key is not RoleTypes.Phantom or RoleTypes.Viper)
+                            if (kvp.Key is not (RoleTypes.Phantom or RoleTypes.Viper))
                             {
-                                List<MessageWriter> messageWriter = AmongUsClient.Instance.StartRpcDesync(pc.NetId, (byte)RpcCalls.SetRole, SendOption.None, pc.GetClientId(), clientCheck);
-                                messageWriter.ForEach(mW => mW.Write((ushort)RoleTypes.Impostor));
-                                messageWriter.ForEach(mW => mW.Write(false));
-                                AmongUsClient.Instance.FinishRpcDesync(messageWriter);
+                                AmongUsClient.Instance.SendRpcImmediatelyDesync(pc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(pc), writer =>
+                                {
+                                    writer.Write((ushort)RoleTypes.Impostor);
+                                    writer.Write(false);
+                                });
                             }
                         }
 
@@ -195,10 +199,11 @@ internal static class RoleManagerPatch
                         {
                             if (kvp.Key is not RoleTypes.Noisemaker)
                             {
-                                List<MessageWriter> messageWriter = AmongUsClient.Instance.StartRpcDesync(pc.NetId, (byte)RpcCalls.SetRole, SendOption.None, pc.GetClientId(), clientCheck);
-                                messageWriter.ForEach(mW => mW.Write((ushort)RoleTypes.Crewmate));
-                                messageWriter.ForEach(mW => mW.Write(false));
-                                AmongUsClient.Instance.FinishRpcDesync(messageWriter);
+                                AmongUsClient.Instance.SendRpcImmediatelyDesync(pc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(pc), writer =>
+                                {
+                                    writer.Write((ushort)RoleTypes.Crewmate);
+                                    writer.Write(false);
+                                });
                             }
                         }
 
@@ -352,10 +357,11 @@ internal static class RoleManagerPatch
                 // Desync ghost role to hide it from non-BAU players
                 if (BetterGameSettings.DesyncRoles.GetBool())
                 {
-                    List<MessageWriter> messageWriter = AmongUsClient.Instance.StartRpcDesync(player.NetId, (byte)RpcCalls.SetRole, SendOption.None, player.GetClientId(), clientCheck);
-                    messageWriter.ForEach(mW => mW.Write((ushort)player.Data.Role.DefaultGhostRole));
-                    messageWriter.ForEach(mW => mW.Write(false));
-                    AmongUsClient.Instance.FinishRpcDesync(messageWriter);
+                    AmongUsClient.Instance.SendRpcImmediatelyDesync(player.NetId, RpcCalls.SetRole, SendOption.None, SendTo(player), writer =>
+                    {
+                        writer.Write((ushort)player.Data.Role.DefaultGhostRole);
+                        writer.Write(false);
+                    });
                 }
 
                 return false;

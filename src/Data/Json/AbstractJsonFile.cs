@@ -35,7 +35,7 @@ internal abstract class AbstractJsonFile
         if (_hasInit) return;
         _hasInit = true;
 
-        if (!CheckFile())
+        if (!IsFileValid())
         {
             Save();
             return;
@@ -107,15 +107,6 @@ internal abstract class AbstractJsonFile
     }
 
     /// <summary>
-    /// Reads the content from the JSON file.
-    /// </summary>
-    /// <returns>The content of the JSON file.</returns>
-    protected virtual string ReadFromFile()
-    {
-        return File.ReadAllText(FilePath);
-    }
-
-    /// <summary>
     /// Saves the current instance's data to the JSON file.
     /// </summary>
     /// <returns>True if saving was successful, false otherwise.</returns>
@@ -136,19 +127,10 @@ internal abstract class AbstractJsonFile
     }
 
     /// <summary>
-    /// Writes the JSON string to the file.
+    /// Determines whether the file specified by the current FilePath exists and contains valid, non-empty JSON content.
     /// </summary>
-    /// <param name="json">The JSON string to write.</param>
-    protected virtual void WriteToFile(string json)
-    {
-        File.WriteAllText(FilePath, json);
-    }
-
-    /// <summary>
-    /// Checks if the JSON file exists and contains valid data.
-    /// </summary>
-    /// <returns>True if the file exists and contains valid JSON data, false otherwise.</returns>
-    private bool CheckFile()
+    /// <returns>true if the file exists, is not empty, and contains valid, non-empty JSON content; otherwise, false.</returns>
+    private bool IsFileValid()
     {
         var directory = Path.GetDirectoryName(FilePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -163,25 +145,22 @@ internal abstract class AbstractJsonFile
 
         var content = TryReadFromFile();
         if (string.IsNullOrEmpty(content.Trim())) return false;
-        var jsonElement = JsonSerializer.Deserialize<JsonElement>(content);
-
-        var fileInfo = new FileInfo(FilePath);
-        if (fileInfo.Length == 0)
-        {
-            return false;
-        }
 
         try
         {
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(content);
+
+            var fileInfo = new FileInfo(FilePath);
+            if (fileInfo.Length == 0)
+            {
+                return false;
+            }
+
             if (jsonElement.ValueKind == JsonValueKind.Object && !jsonElement.EnumerateObject().Any() ||
                 jsonElement.ValueKind == JsonValueKind.Array && !jsonElement.EnumerateArray().Any())
             {
                 return false;
             }
-        }
-        catch (JsonException)
-        {
-            return false;
         }
         catch (Exception)
         {
@@ -189,5 +168,23 @@ internal abstract class AbstractJsonFile
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Reads the content from the JSON file.
+    /// </summary>
+    /// <returns>The content of the JSON file.</returns>
+    protected virtual string ReadFromFile()
+    {
+        return File.ReadAllText(FilePath);
+    }
+
+    /// <summary>
+    /// Writes the JSON string to the file.
+    /// </summary>
+    /// <param name="json">The JSON string to write.</param>
+    protected virtual void WriteToFile(string json)
+    {
+        File.WriteAllText(FilePath, json);
     }
 }

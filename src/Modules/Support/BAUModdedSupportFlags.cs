@@ -163,6 +163,18 @@ public static class BAUModdedSupportFlags
     /// </summary>
     public static string Disable_EndGameSummary = "gameplay.disable.endgamesummary";
 
+    /// <summary>
+    /// Disables custom icon on mini map.
+    /// When enabled by another mod, custom icons on the mini map will not be generated.
+    /// </summary>
+    public static string Disable_MinimapIcons = "gameplay.disable.minimapicons";
+
+    /// <summary>
+    /// Disables custom vent color highlights.
+    /// When enabled by another mod, vent colors when highlighted will not use vent groups.
+    /// </summary>
+    public static string Disable_VentColorGroups = "gameplay.disable.ventcolorgroups";
+
     private static readonly HashSet<string> _flags = [];
     private static bool _initialized = false;
 
